@@ -4,6 +4,8 @@ import (
 	"time"
 )
 
+type ResourceList []TypedResource
+
 type AsanaGetUsersResponse struct {
 	Data     []AsanaUser   `json:"data"`
 	NextPage AsanaNextPage `json:"next_page,omitempty"`
@@ -19,20 +21,20 @@ type BaseResource struct {
 	ResourceType string `json:"resource_type"`
 }
 
-func (t BaseResource) GetGid() string {
-	return t.Gid
-}
-
-func (t BaseResource) GetResourceType() string {
-	return t.ResourceType
-}
-
 type AsanaUser struct {
 	BaseResource
 	Email      string           `json:"email"`
 	Name       string           `json:"name"`
 	Photo      AsanaPhoto       `json:"photo"`
 	Workspaces []AsanaWorkspace `json:"workspaces"`
+}
+
+func (t AsanaUser) GetGid() string {
+	return t.BaseResource.Gid
+}
+
+func (t AsanaUser) GetResourceType() string {
+	return t.BaseResource.ResourceType
 }
 
 type AsanaPhoto struct {
@@ -66,6 +68,14 @@ type AsanaProjectResource struct {
 	Color         string             `json:"color"`
 	CreatedAt     *time.Time         `json:"created_at"`
 	CurrentStatus AsanaProjectStatus `json:"current_status"`
+}
+
+func (t AsanaProjectResource) GetGid() string {
+	return t.BaseResource.Gid
+}
+
+func (t AsanaProjectResource) GetResourceType() string {
+	return t.BaseResource.ResourceType
 }
 
 type AsanaAuthor struct {

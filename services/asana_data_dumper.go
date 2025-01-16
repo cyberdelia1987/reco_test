@@ -8,17 +8,22 @@ import (
 
 	"go.uber.org/zap"
 
+	"github.com/cyber/test-project/config"
 	"github.com/cyber/test-project/logging"
 	"github.com/cyber/test-project/models"
 )
 
-type AsanaDataDumper struct {
-	pathToSave string
+type Dumper interface {
+	DumpList(ctx context.Context, resources []models.TypedResource)
 }
 
-func NewAsanaDataDumper(pathToSave string) *AsanaDataDumper {
+type AsanaDataDumper struct {
+	cfg config.DataDumperConfig
+}
+
+func NewAsanaDataDumper(cfg config.DataDumperConfig) *AsanaDataDumper {
 	return &AsanaDataDumper{
-		pathToSave: pathToSave,
+		cfg: cfg,
 	}
 }
 
@@ -26,7 +31,14 @@ func (d AsanaDataDumper) DumpList(ctx context.Context, resources []models.TypedR
 	logger := logging.FromContext(ctx).With(zap.String("operation", "dump_resources"))
 
 	for _, res := range resources {
-		path := fmt.Sprintf("%s/%s/%s.json", d.pathToSave, res.GetResourceType(), res.GetGid())
+		path := fmt.Sprintf("%s/%s", d.cfg.Path, res.GetResourceType())
+		err := os.MkdirAll(path, 0755)
+		if err != nil {
+			logger.Warn("Failed to create directory", zap.String("path", path))
+			continue
+		}
+
+		pathFn := fmt.Sprintf("%s/%s", path, res.GetResourceType())
 
 		encoded, err := json.Marshal(res)
 		if err != nil {
@@ -34,15 +46,15 @@ func (d AsanaDataDumper) DumpList(ctx context.Context, resources []models.TypedR
 			continue
 		}
 
-		fh, err := os.Create(path)
+		fh, err := os.Create(pathFn)
 		if err != nil {
-			logger.Error("failed to create file", zap.String("path", path), zap.Error(err))
+			logger.Error("failed to create file", zap.String("path", pathFn), zap.Error(err))
 			continue
 		}
 
 		_, err = fh.Write(encoded)
 		if err != nil {
-			logger.Error("failed into write file", zap.String("path", path), zap.Error(err))
+			logger.Error("failed into write file", zap.String("path", pathFn), zap.Error(err))
 		}
 
 		closeFile(ctx, fh)

@@ -11,3 +11,6 @@ logging:
 asana:
   base_url: "https://app.asana.com"
   access_token: "your_token_goes_here:81c00ae6b283c6db7fe3136b7ea0a0e8"
+
+data_dumper:
+  path: "./storage/data_dumps"

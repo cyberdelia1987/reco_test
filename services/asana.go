@@ -18,12 +18,14 @@ type AsanaProjectsGetter interface {
 type AsanaService struct {
 	client      *clients.AsanaClient
 	accessToken string
+	dataDumper  Dumper
 }
 
-func NewAsanaUsersService(client *clients.AsanaClient, accessToken string) *AsanaService {
+func NewAsanaService(client *clients.AsanaClient, accessToken string, dumper Dumper) *AsanaService {
 	return &AsanaService{
 		client:      client,
 		accessToken: accessToken,
+		dataDumper:  dumper,
 	}
 }
 
@@ -34,6 +36,8 @@ func (a AsanaService) GetUsers(ctx context.Context, request clients.GetUsersRequ
 		return models.AsanaGetUsersResponse{}, err
 	}
 
+	//a.dataDumper.DumpList(ctx, response.Data)
+
 	return response, nil
 }
 
@@ -43,5 +47,8 @@ func (a AsanaService) GetProjects(ctx context.Context, request clients.GetProjec
 	if err != nil {
 		return models.AsanaGetProjectsResponse{}, err
 	}
+
+	//a.dataDumper.DumpList(ctx, response.Data)
+
 	return response, nil
 }

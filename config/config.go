@@ -12,6 +12,7 @@ type Config struct {
 	Logging         LoggingConfig        `mapstructure:"logging"`
 	CircuitBreaker  CircuitBreakerConfig `mapstructure:"circuit_breaker"`
 	Asana           AsanaConfig          `mapstructure:"asana"`
+	DataDumper      DataDumperConfig     `mapstructure:"data_dumper"`
 }
 
 type HttpConfig struct {
@@ -34,6 +35,10 @@ type CircuitBreakerConfig struct {
 type AsanaConfig struct {
 	BaseURL     string `mapstructure:"base_url"`
 	AccessToken string `mapstructure:"access_token"`
+}
+
+type DataDumperConfig struct {
+	Path string `mapstructure:"path"`
 }
 
 func ReadConfig(configPath string) (Config, error) {

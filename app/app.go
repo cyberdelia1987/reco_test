@@ -44,13 +44,15 @@ func (app *Application) Start() error {
 
 	baseHttpClient := http.Client{}
 
+	dataDumper := services.NewAsanaDataDumper(app.Config.DataDumper)
+
 	asanaClientOptions := clients.ClientOptions{
 		ServiceName: "asana",
 		BaseClient:  &baseHttpClient,
 		BaseURL:     app.Config.Asana.BaseURL,
 	}
 	asanaClient := clients.NewAsanaClient(asanaClientOptions)
-	asanaService := services.NewAsanaUsersService(asanaClient, app.Config.Asana.AccessToken)
+	asanaService := services.NewAsanaService(asanaClient, app.Config.Asana.AccessToken, dataDumper)
 
 	routerConfig := RouterConfig{
 		AsanaService: asanaService,
