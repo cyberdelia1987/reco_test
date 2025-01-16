@@ -4,10 +4,20 @@ import (
 	"time"
 )
 
-type ResourceList []TypedResource
+type AsanaUsers []AsanaUser
+
+func (u AsanaUsers) ToTypedResourcesSlice() []TypedResource {
+	typedResourcesSlice := make([]TypedResource, 0, len(u))
+
+	for _, resource := range u {
+		typedResourcesSlice = append(typedResourcesSlice, resource)
+	}
+
+	return typedResourcesSlice
+}
 
 type AsanaGetUsersResponse struct {
-	Data     []AsanaUser   `json:"data"`
+	Data     AsanaUsers    `json:"data"`
 	NextPage AsanaNextPage `json:"next_page,omitempty"`
 }
 
@@ -57,11 +67,22 @@ type AsanaNextPage struct {
 	Uri    string `json:"uri"`
 }
 
-type AsanaGetProjectsResponse struct {
-	Data     []AsanaProjectResource `json:"data"`
-	NextPage AsanaNextPage          `json:"next_page,omitempty"`
+type AsanaProjects []AsanaProjectResource
+
+func (p AsanaProjects) ToTypedResourcesSlice() []TypedResource {
+	typedResourcesSlice := make([]TypedResource, 0, len(p))
+
+	for _, resource := range p {
+		typedResourcesSlice = append(typedResourcesSlice, resource)
+	}
+
+	return typedResourcesSlice
 }
 
+type AsanaGetProjectsResponse struct {
+	Data     AsanaProjects `json:"data"`
+	NextPage AsanaNextPage `json:"next_page,omitempty"`
+}
 type AsanaProjectResource struct {
 	BaseResource
 	Archived      bool               `json:"archived"`

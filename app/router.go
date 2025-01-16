@@ -7,7 +7,9 @@ import (
 	"github.com/justinas/alice"
 
 	"github.com/cyber/test-project/controllers"
+	"github.com/cyber/test-project/middleware"
 	"github.com/cyber/test-project/services"
+	"github.com/cyber/test-project/transport"
 )
 
 type AsanaService interface {
@@ -24,7 +26,9 @@ const pathPrefix = "/api/"
 func NewRouter(cfg RouterConfig) (*mux.Router, error) {
 	router := mux.NewRouter()
 
-	chain := alice.New()
+	chain := alice.New(
+		middleware.Recovery(transport.SendError),
+	)
 
 	baseRouter := router.PathPrefix(pathPrefix).Subrouter()
 

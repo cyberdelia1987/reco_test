@@ -26,3 +26,7 @@ func SendJson(ctx context.Context, w http.ResponseWriter, statusCode int, body a
 		logging.Logger.Error("error writing body", zap.Error(err))
 	}
 }
+
+func SendError(ctx context.Context, w http.ResponseWriter, err error) {
+	SendJson(ctx, w, http.StatusInternalServerError, err)
+}

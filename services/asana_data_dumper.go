@@ -13,8 +13,12 @@ import (
 	"github.com/cyber/test-project/models"
 )
 
+type TypedResourcesSliceConverter interface {
+	ToTypedResourcesSlice() []models.TypedResource
+}
+
 type Dumper interface {
-	DumpList(ctx context.Context, resources []models.TypedResource)
+	DumpAny(ctx context.Context, resources []models.TypedResource)
 }
 
 type AsanaDataDumper struct {
@@ -27,7 +31,7 @@ func NewAsanaDataDumper(cfg config.DataDumperConfig) *AsanaDataDumper {
 	}
 }
 
-func (d AsanaDataDumper) DumpList(ctx context.Context, resources []models.TypedResource) {
+func (d AsanaDataDumper) DumpAny(ctx context.Context, resources []models.TypedResource) {
 	logger := logging.FromContext(ctx).With(zap.String("operation", "dump_resources"))
 
 	for _, res := range resources {
@@ -38,7 +42,7 @@ func (d AsanaDataDumper) DumpList(ctx context.Context, resources []models.TypedR
 			continue
 		}
 
-		pathFn := fmt.Sprintf("%s/%s", path, res.GetResourceType())
+		pathFn := fmt.Sprintf("%s/%s.json", path, res.GetGid())
 
 		encoded, err := json.Marshal(res)
 		if err != nil {

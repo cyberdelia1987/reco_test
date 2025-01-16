@@ -36,7 +36,7 @@ func (a AsanaService) GetUsers(ctx context.Context, request clients.GetUsersRequ
 		return models.AsanaGetUsersResponse{}, err
 	}
 
-	//a.dataDumper.DumpList(ctx, response.Data)
+	a.dataDumper.DumpAny(ctx, response.Data.ToTypedResourcesSlice())
 
 	return response, nil
 }
@@ -48,7 +48,7 @@ func (a AsanaService) GetProjects(ctx context.Context, request clients.GetProjec
 		return models.AsanaGetProjectsResponse{}, err
 	}
 
-	//a.dataDumper.DumpList(ctx, response.Data)
+	a.dataDumper.DumpAny(ctx, response.Data.ToTypedResourcesSlice())
 
 	return response, nil
 }

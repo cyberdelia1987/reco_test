@@ -16,13 +16,13 @@ func main() {
 
 	application, err := app.InitApplication(*configPath)
 	if err != nil {
-		log.Fatalf("Failed to initialize application: %f", err)
+		log.Fatalf("Failed to initialize application: %v", err)
 	}
 
 	go func() {
 		err = application.Start()
 		if err != nil {
-			log.Fatalf("Failed to start application: %f", err)
+			log.Fatalf("Failed to start application: %v", err)
 		}
 	}()
 
