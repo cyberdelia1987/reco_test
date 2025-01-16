@@ -1,0 +1,13 @@
+shutdown_timeout: 5s
+
+http:
+  addr: 0.0.0.0:8001
+
+logging:
+  level: info
+  output:
+    - stdout
+
+asana:
+  base_url: "https://app.asana.com"
+  access_token: "your_token_goes_here:81c00ae6b283c6db7fe3136b7ea0a0e8"
