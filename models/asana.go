@@ -7,13 +7,7 @@ import (
 type AsanaUsers []AsanaUser
 
 func (u AsanaUsers) ToTypedResourcesSlice() []TypedResource {
-	typedResourcesSlice := make([]TypedResource, 0, len(u))
-
-	for _, resource := range u {
-		typedResourcesSlice = append(typedResourcesSlice, resource)
-	}
-
-	return typedResourcesSlice
+	return convertSliceTypes(u, func(u AsanaUser) TypedResource { return u })
 }
 
 type AsanaGetUsersResponse struct {
@@ -70,13 +64,7 @@ type AsanaNextPage struct {
 type AsanaProjects []AsanaProjectResource
 
 func (p AsanaProjects) ToTypedResourcesSlice() []TypedResource {
-	typedResourcesSlice := make([]TypedResource, 0, len(p))
-
-	for _, resource := range p {
-		typedResourcesSlice = append(typedResourcesSlice, resource)
-	}
-
-	return typedResourcesSlice
+	return convertSliceTypes(p, func(r AsanaProjectResource) TypedResource { return r })
 }
 
 type AsanaGetProjectsResponse struct {
@@ -121,4 +109,13 @@ type AsanaProjectStatusUpdate struct {
 	BaseResource
 	ResourceSubtype string `json:"resource_subtype"`
 	Title           string `json:"title"`
+}
+
+func convertSliceTypes[F, T any](resources []F, f func(F) T) []T {
+	slice := make([]T, 0, len(resources))
+	for _, res := range resources {
+		slice = append(slice, f(res))
+	}
+
+	return slice
 }
